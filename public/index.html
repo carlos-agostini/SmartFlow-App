@@ -1,0 +1,143 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ESP IoT Firebase DASH</title>
+
+    <!-- update the version number as needed -->
+    <script src="https://www.gstatic.com/firebasejs/8.8.1/firebase-app.js"></script>
+
+    <!-- include only the Firebase features as you need -->
+    <script src="https://www.gstatic.com/firebasejs/8.8.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.8.1/firebase-database.js"></script>
+
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://cdn.rawgit.com/Mikhus/canvas-gauges/gh-pages/download/2.1.7/all/gauge.min.js"></script>
+  
+
+    <script>
+     // REPLACE WITH YOUR web app's Firebase configuration
+     const firebaseConfig = {
+      apiKey: "AIzaSyAc7dpZ7wVbdGj9ZmQoFO33M1xDJDmZ-VE",
+      authDomain: "riego-9ebd6.firebaseapp.com",
+      projectId: "riego-9ebd6",
+      storageBucket: "riego-9ebd6.appspot.com",
+      messagingSenderId: "680841986319",
+      appId: "1:680841986319:web:a94f0f4a6ee69762c6fe7a",
+      measurementId: "G-7B3YJV3N8B"
+    };
+
+      // Initialize firebase
+      firebase.initializeApp(firebaseConfig);
+
+      // Make auth and database references
+      const auth = firebase.auth();
+      const db = firebase.database();
+
+    </script>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+
+<body>
+  <!--TOP BAR-->
+  <div class="topnav">
+    <h1>SmartFlow App <i class="fas fa-clipboard-list"></i></h1>
+  </div>
+
+  <!--AUTHENTICATION BAR (USER DETAILS/LOGOUT BUTTON)-->
+  <div id="authentication-bar" style="display: none;">
+    <p><span id="authentication-status">Usuario Logged</span>
+       <span id="user-details">USEREMAIL</span>
+       <a href="/" id="logout-link">(logout)</a>
+    </p>
+  </div>
+
+  <!--LOGIN FORM-->
+  <form id="login-form" style="display: none;">
+    <div class="form-elements-container">
+      <label for="input-email"><b>Email</b></label>
+      <input type="text" placeholder="Enter Username" id="input-email" required>
+
+      <label for="input-password"><b>Password</b></label>
+      <input type="password" placeholder="Enter Password" id="input-password" required>
+
+      <button type="submit" id="login-button">Login</button>
+      <p id="error-message" style="color:red;"></p>
+    </div>
+  </form>
+
+  <!--CONTENT (SENSOR READINGS)-->
+  <div class="content-sign-in" id="content-sign-in">
+    <!--SENSOR READINGS-->
+    <div class="leds-container">
+      <!-- Coloca tus LEDs aquí -->
+      <div class="led" id="led-yellow"></div>
+      <div class="led" id="led-red"></div>
+      <div class="led" id="led-green"></div>
+    </div>
+    <div class="cards">    
+      <!--TEMPERATURE / HUMIDITY-->
+      <div class="card">
+        <p><i class="fas fa-thermometer-half" style="color:#e72b3b;"></i> TEMPERATURA Y HUMEDAD</p>
+        <p><span class="reading"><span id="temp"></span> &deg;C </span></p><p><span class="reading"><span id="hum"></span> &percnt;</span></p>
+      </div>
+      <!--LED-->
+      <div class="card card-switch\"><h4><i class="fas fa-lightbulb\"></i>ESTADO VÁLVULA</h4><label class="switch"><input type="checkbox" id="pump" disabled><span class="slider"></span></label></div>
+      <!--SOILHUMIDITY-->
+      <div class="card">
+        <p><i class="fas fa-tint" style="color:#00add6;"></i> HUMEDAD DE LA TIERRA</p>
+        <p><span class="reading"><span id="soilHum"></span> &percnt;</span></p>
+      </div>
+      <!--PRESSURE-->
+      <div class="card">
+        <p><i class="fas fa-rocket" style="color:#e47637;"></i> PRESIÓN</p>
+        <p><span class="reading"><span id="pres"></span> hPa</span></p>
+      </div>
+      <!--RAIN-->
+      <div class="card">
+        <p><i class="fas fa-cloud-rain" style="color:#059e8a;"></i> LLUVIA</p>
+        <p><span class="reading"><span id="rain"></span> %</span></p>
+      </div>
+      <!--LIGHT-->
+      <div class="card">
+        <p><i class="fas fa-sun" style="color:#f9d71c;"></i> LUZ</p>
+        <p><span class="reading"><span id="light"></span> %</span></p>
+      </div>
+    </div>
+     
+    <!--CHARTS-->
+  <!--  <div id="charts-div" style="display:none"> -->
+    <div id="charts-div" >
+      <!--SET NUMBER OF READINGS INPUT FIELD-->
+      <div>
+        <p> GRÁFICAS</p>
+      </div>
+      <!--TEMPERATURE-CHART-->
+      <div class="cards">
+        <div class="card">
+          <p><i class="fas fa-thermometer-half" style="color:#059e8a;"></i> TEMPERATURE CHART</p>
+          <div id="chart-temperature" class="chart-container"></div>
+        </div>
+      </div>
+        <!--HUMIDITY-CHART-->
+      <div class="cards">
+        <div class="card">
+          <p><i class="fas fa-tint" style="color:#059e8a;"></i> HUMIDITY CHART</p>
+          <div id="chart-humidity" class="chart-container"></div>
+        </div> <!---->
+      </div>
+  
+    </div>
+  </div>
+
+  
+
+  <script src="scripts/index.js"></script>
+  <script src="scripts/auth.js"></script>
+  <script src="scripts/charts-definitions.js"></script>
+  </body>
+</html>
